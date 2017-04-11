@@ -16,6 +16,7 @@ namespace Post
                 .UseContentRoot(Directory.GetCurrentDirectory())
                 .UseIISIntegration()
                 .UseStartup<Startup>()
+                .UseUrls("http://0.0.0.0:5000")
                 .Build();
 
             host.Run();
