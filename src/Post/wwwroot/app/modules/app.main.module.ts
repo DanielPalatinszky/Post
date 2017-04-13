@@ -1,12 +1,14 @@
 ﻿import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
-import { AppComponent } from "../components/app.component";
+import { ConnectComponent } from '../components/connect/app.connect.component';
+import { WebSocketService } from '../services/websocket/app.websocket.service';
 
 @NgModule({
     imports: [ BrowserModule ],
-    declarations: [ AppComponent ],
-    bootstrap: [ AppComponent ]
+    declarations: [ ConnectComponent ],
+    bootstrap: [ ConnectComponent ],
+    providers: [ WebSocketService ]
 })
 export class AppModule {
     
