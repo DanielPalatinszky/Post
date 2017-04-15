@@ -8,7 +8,8 @@
     "Microsoft.Extensions.Logging.Console": "1.1.1",
     "Microsoft.NETCore.App": "1.1.1",
     "Microsoft.TypeScript.Compiler": "2.2.1",
-    "Microsoft.TypeScript.MSBuild": "2.2.2"
+    "Microsoft.TypeScript.MSBuild": "2.2.2",
+    "Newtonsoft.Json": "10.0.2"
   },
 
   "tools": {

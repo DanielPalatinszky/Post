@@ -1,15 +1,17 @@
-﻿import { Component, OnInit } from '@angular/core';
+﻿import { Component } from '@angular/core';
 
-import { WebSocketService } from "../../services/websocket/app.websocket.service";
+import { MessageService } from '../../services/message/app.message.service';
 
 @Component({
-    selector: "post-app",
+    selector: "app-connect",
     templateUrl: "app/components/connect/app.connect.component.html"
 })
-export class ConnectComponent implements OnInit {
-    constructor(private wsService: WebSocketService) { }
+export class ConnectComponent {
+    private nickName = "";
 
-    ngOnInit(): void {
-        this.wsService.connect("ws://localhost:5000/ws");
+    constructor(private messageService: MessageService) { }
+
+    sendConnectionRequest(): void {
+        this.messageService.sendConnectionMessage(this.nickName);
     }
 }

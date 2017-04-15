@@ -40,8 +40,14 @@ gulp.task('restore:angular', function () {
 
 gulp.task('restore:bootstrap', function () {
     gulp.src([
-        'node_modules/bootstrap/dist/**/*.*'
+        'node_modules/bootstrap/**/*.*'
     ]).pipe(gulp.dest(libs + 'bootstrap'));
+});
+
+gulp.task('restore:jquery', function () {
+    gulp.src([
+        'node_modules/jquery/**/*.*'
+    ]).pipe(gulp.dest(libs + 'jquery'));
 });
 
 gulp.task('restore', [
@@ -51,5 +57,6 @@ gulp.task('restore', [
     'restore:rxjs',
     'restore:angular-in-memory-web-api',
     'restore:angular',
-    'restore:bootstrap'
+    'restore:bootstrap',
+    'restore:jquery'
 ]);
