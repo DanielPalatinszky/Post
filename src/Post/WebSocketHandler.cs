@@ -25,7 +25,12 @@ namespace Post
 
         public static void Map(IApplicationBuilder app)
         {
-            app.UseWebSockets();
+            var webSocketOptions = new WebSocketOptions()
+            {
+                KeepAliveInterval = TimeSpan.FromSeconds(120)
+            };
+
+            app.UseWebSockets(webSocketOptions);
             app.Use(Acceptor);
         }
     }
