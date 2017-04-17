@@ -244,3 +244,5 @@ ModelManifest.xml
 #TypeScript generated files
 *.js
 *.js.map
+
+src/Post/wwwroot/libs

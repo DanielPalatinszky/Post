@@ -41,13 +41,15 @@ namespace Post
                     if (successful)
                     {
                         var response = new Message(Method.Approved, "", message.Source, "");
-                        communicationHandler.SendMessageAsync(response);
+                        await communicationHandler.SendMessageAsync(response);
+
+                        await communicationHandler.ListenForMessages();
                     }
                 }
             }
         }
 
-        public async void SendMessageAsync(Message message)
+        private async Task SendMessageAsync(Message message)
         {
             var jObject = new JObject();
             jObject.Add("method", message.Method.ToString());
@@ -59,6 +61,22 @@ namespace Post
             var outgoing = new ArraySegment<byte>(buffer);
 
             await webSocket.SendAsync(outgoing, WebSocketMessageType.Text, true, CancellationToken.None);
+        }
+
+        private async Task ListenForMessages()
+        {
+            var buffer = new byte[BufferSize];
+            var seg = new ArraySegment<byte>(buffer);
+
+            WebSocketReceiveResult incoming;
+
+            do
+            {
+                incoming = await webSocket.ReceiveAsync(seg, CancellationToken.None);
+                var message = MessageProcessor.ProcessMessage(Encoding.UTF8.GetString(buffer, 0, incoming.Count));
+
+                await SendMessageAsync(message);
+            } while (!incoming.CloseStatus.HasValue);
         }
     }
 }
