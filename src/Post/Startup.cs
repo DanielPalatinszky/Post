@@ -34,34 +34,6 @@ namespace Post
             app.UseStaticFiles();
 
             app.Map("/ws", WebSocketHandler.Map);
-
-            /*var webSocketOptions = new WebSocketOptions()
-            {
-                KeepAliveInterval = TimeSpan.FromSeconds(120),
-                ReceiveBufferSize = 4 * 1024
-            };
-            app.UseWebSockets(webSocketOptions);
-
-            app.Use(async (context, next) =>
-            {
-                if (context.Request.Path == "/ws")
-                {
-                    if (context.WebSockets.IsWebSocketRequest)
-                    {
-                        WebSocket webSocket = await context.WebSockets.AcceptWebSocketAsync();
-                        await Echo(context, webSocket);
-                    }
-                    else
-                    {
-                        context.Response.StatusCode = 400;
-                    }
-                }
-                else
-                {
-                    await next();
-                }
-
-            });*/
         }
     }
 }
