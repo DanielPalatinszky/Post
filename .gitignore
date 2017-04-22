@@ -246,3 +246,4 @@ ModelManifest.xml
 *.js.map
 
 src/Post/wwwroot/libs
+/src/Post/Bootstrap Test

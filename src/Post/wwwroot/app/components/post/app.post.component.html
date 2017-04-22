@@ -1,0 +1,17 @@
+﻿<div class="row">
+    <div class="nav-side-menu">
+        <ul>
+            <li *ngFor="let client of clients" (click)="selectedClient=client" [class.active]="client===selectedClient">
+                <a class="item">
+                    {{client}}
+                </a>
+            </li>
+        </ul>
+    </div>
+    
+    <div class="container-fluid">
+        <div class="messenger" *ngIf="selectedClient">
+            <input #messengerInput type="text" class="messenger-input" (keyup.enter)="sendMessage(messengerInput.value)">
+        </div>
+    </div>
+</div>

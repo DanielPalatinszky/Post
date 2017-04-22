@@ -5,9 +5,9 @@ import { Message } from '../../models/message';
 
 @Injectable()
 export class WebSocketService {
-    private socket: Subject<Message>;
+    private socket: Subject<MessageEvent>;
 
-    connect(url: string): Subject<Message> {
+    connect(url: string): Subject<MessageEvent> {
         if (!this.socket) {
             this.socket = this.create(url);
         }
@@ -15,10 +15,10 @@ export class WebSocketService {
         return this.socket;
     }
 
-    private create(url: string): Subject<Message> {
+    private create(url: string): Subject<MessageEvent> {
         let ws = new WebSocket(url);
 
-        let observable = Observable.create((obs: Observer<Message>) => {
+        let observable = Observable.create((obs: Observer<MessageEvent>) => {
             ws.onmessage = obs.next.bind(obs);
             ws.onerror = obs.error.bind(obs);
             ws.onclose = obs.complete.bind(obs);

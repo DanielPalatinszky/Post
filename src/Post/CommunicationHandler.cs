@@ -41,7 +41,10 @@ namespace Post
                     if (successful)
                     {
                         var response = new Message(Method.Approved, "", message.Source, "");
+
                         await communicationHandler.SendMessageAsync(response);
+
+                        await RefreshClients();
 
                         await communicationHandler.ListenForMessages();
                     }
@@ -73,10 +76,45 @@ namespace Post
             do
             {
                 incoming = await webSocket.ReceiveAsync(seg, CancellationToken.None);
+
+                if (incoming.CloseStatus == WebSocketCloseStatus.EndpointUnavailable)
+                {
+                    ConnectionManager.Instance.RemoveConnection(this);
+                    await RefreshClients();
+                    break;
+                }
+
                 var message = MessageProcessor.ProcessMessage(Encoding.UTF8.GetString(buffer, 0, incoming.Count));
 
                 await SendMessageAsync(message);
             } while (!incoming.CloseStatus.HasValue);
+        }
+
+        private static async Task RefreshClients()
+        {
+            foreach (var communicationHandler in ConnectionManager.Instance.CommunicationHandlers)
+            {
+                var current = ConnectionManager.Instance.SearchByHandler(communicationHandler);
+
+                var clients = new StringBuilder();
+                var clientList = ConnectionManager.Instance.Clients;
+
+                foreach (var client in clientList)
+                {
+                    if (client == current) continue;
+
+                    clients.Append(client + "\n");
+                }
+
+                if (clients.Length > 1)
+                {
+                    clients.Remove(clients.Length - 1, 1);
+                }
+
+                var refreshMessage = new Message(Method.Refresh, "", current, clients.ToString());
+
+                await communicationHandler.SendMessageAsync(refreshMessage);
+            }
         }
     }
 }
