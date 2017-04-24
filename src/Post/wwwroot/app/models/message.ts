@@ -4,3 +4,8 @@
     target: string;
     body: string;
 }
+
+export interface MessageLine {
+    name: string;
+    body: string;
+}

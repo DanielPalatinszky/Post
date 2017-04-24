@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 
 namespace Post
 {
-    public enum Method { Connection, Approved, Refresh, Unknown }
+    public enum Method { Connection, Approved, Refresh, Message, Unknown }
 
     public static class MessageProcessor
     {

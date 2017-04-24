@@ -2,8 +2,8 @@
     <div class="nav-side-menu">
         <ul>
             <li *ngFor="let client of clients" (click)="selectedClient=client" [class.active]="client===selectedClient">
-                <a class="item">
-                    {{client}}
+                <a class="client">
+                    {{client.name}}
                 </a>
             </li>
         </ul>
@@ -12,6 +12,11 @@
     <div class="container-fluid">
         <div class="messenger" *ngIf="selectedClient">
             <input #messengerInput type="text" class="messenger-input" (keyup.enter)="sendMessage(messengerInput.value)">
+            <ul class="list-group">
+                <li class="list-group-item" *ngFor="let message of messages[selectedClient.id]">
+                    {{message.name}}: {{message.body}}
+                </li>
+            </ul>
         </div>
     </div>
 </div>

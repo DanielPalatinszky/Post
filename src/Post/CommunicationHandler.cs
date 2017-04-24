@@ -37,10 +37,10 @@ namespace Post
                 {
                     var communicationHandler = new CommunicationHandler(webSocket);
 
-                    var successful = ConnectionManager.Instance.RegisterConnection(communicationHandler, message.Source);
-                    if (successful)
+                    var id = ConnectionManager.Instance.RegisterConnection(communicationHandler, message.Source);
+                    if (id >= 0)
                     {
-                        var response = new Message(Method.Approved, "", message.Source, "");
+                        var response = new Message(Method.Approved, "", id.ToString(), "");
 
                         await communicationHandler.SendMessageAsync(response);
 
@@ -86,24 +86,21 @@ namespace Post
 
                 var message = MessageProcessor.ProcessMessage(Encoding.UTF8.GetString(buffer, 0, incoming.Count));
 
-                await SendMessageAsync(message);
+                var target = ConnectionManager.Instance.SearchById(int.Parse(message.Target));
+
+                await target.Item1.SendMessageAsync(message);
             } while (!incoming.CloseStatus.HasValue);
         }
 
         private static async Task RefreshClients()
         {
-            foreach (var communicationHandler in ConnectionManager.Instance.CommunicationHandlers)
+            foreach (var client in ConnectionManager.Instance.Clients)
             {
-                var current = ConnectionManager.Instance.SearchByHandler(communicationHandler);
-
                 var clients = new StringBuilder();
-                var clientList = ConnectionManager.Instance.Clients;
 
-                foreach (var client in clientList)
+                foreach (var otherClient in ConnectionManager.Instance.Clients.Where(e => e.Key != client.Key))
                 {
-                    if (client == current) continue;
-
-                    clients.Append(client + "\n");
+                    clients.Append($"{otherClient.Key} {otherClient.Value.Item2}\n");
                 }
 
                 if (clients.Length > 1)
@@ -111,9 +108,9 @@ namespace Post
                     clients.Remove(clients.Length - 1, 1);
                 }
 
-                var refreshMessage = new Message(Method.Refresh, "", current, clients.ToString());
+                var refreshMessage = new Message(Method.Refresh, "", client.Value.Item2, clients.ToString());
 
-                await communicationHandler.SendMessageAsync(refreshMessage);
+                await client.Value.Item1.SendMessageAsync(refreshMessage);
             }
         }
     }

@@ -5,15 +5,19 @@ import { Router } from '@angular/router';
 
 import { WebSocketService } from '../../services/websocket/app.websocket.service';
 import { Message } from '../../models/message';
+import { Client } from '../../models/client';
 
 @Injectable()
 export class MessageService {
     private server: Subject<Message>;
 
-    private clients: string[];
+    private clients: Client[];
 
-    private observer: Observer<string[]>;
-    private observable: Observable<string[]>;
+    private clientObserver: Observer<Client[]>;
+    private clientObservable: Observable<Client[]>;
+
+    private messageObserver: Observer<Message>;
+    private messageObservable: Observable<Message>;
 
     constructor(private wsService: WebSocketService, @Inject(DOCUMENT) private document: Document, private router: Router) { this.init(); }
 
@@ -31,8 +35,12 @@ export class MessageService {
 
         this.server.subscribe(message => this.messageReceived(message), error => this.errorReceived(error), () => this.completionReceived());
 
-        this.observable = new Observable(observer => {
-            this.observer = observer;
+        this.clientObservable = new Observable(observer => {
+            this.clientObserver = observer;
+        });
+
+        this.messageObservable = new Observable(observer => {
+            this.messageObserver = observer;
         });
     }
 
@@ -54,24 +62,44 @@ export class MessageService {
 
     private processMessage(message: Message): void {
         if (message.method === "Approved") {
+            localStorage.setItem("id", message.target);
+
             this.router.navigate(["post"]);
         }
         else if (message.method === "Refresh") {
             this.loadClients(message);
+        }
+        else if (message.method === "Message") {
+            this.messageObserver.next(message);
         }
     }
 
     private loadClients(message: Message): void {
         let clients = message.body.split("\n");
 
+        this.clients = [];
+
         if (clients.length >= 1 && clients[0] !== "") {
-            this.clients = clients;
+            for (let client of clients) {
+                let id = client.split(" ")[0];
+                let name = client.split(" ")[1];
+
+                this.clients.push({id: +id, name: name});
+            }
         }
 
-        this.observer.next(this.clients);
+        this.clientObserver.next(this.clients);
     }
 
-    public getClients(): Observable<string[]> {
-        return this.observable;
+    public getClients(): Observable<Client[]> {
+        return this.clientObservable;
+    }
+
+    public getMessages(): Observable<Message> {
+        return this.messageObservable;
+    }
+
+    public sendMessage(source: string, target: string, message: string): void {
+        this.server.next({ method: "Message", source: source, target: target, body: message });
     }
 }

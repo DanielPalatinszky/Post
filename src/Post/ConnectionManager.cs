@@ -11,11 +11,8 @@ namespace Post
     public class ConnectionManager
     {
         private readonly ConcurrentDictionary<int , Tuple<CommunicationHandler, string>> connections;
-        private int idCounter = 0;
 
-        public IReadOnlyList<Tuple<CommunicationHandler, string>> Clients => connections.Values.ToList();
-
-        public IReadOnlyList<int> Ids => connections.Keys.ToList();
+        public IReadOnlyDictionary<int, Tuple<CommunicationHandler, string>> Clients => connections;
 
         public static readonly ConnectionManager Instance = new ConnectionManager();
 
@@ -24,9 +21,22 @@ namespace Post
             connections = new ConcurrentDictionary<int, Tuple<CommunicationHandler, string>>();
         }
 
-        public bool RegisterConnection(CommunicationHandler communicationHandler, string nickName)
+        public int RegisterConnection(CommunicationHandler communicationHandler, string nickName)
         {
-            return connections.TryAdd(idCounter++, new Tuple<CommunicationHandler, string>(communicationHandler, nickName));
+            var id = 0;
+            while (true)
+            {
+                if (!connections.ContainsKey(id))
+                {
+                    break;
+                }
+
+                id++;
+            }
+
+            var successful = connections.TryAdd(id, new Tuple<CommunicationHandler, string>(communicationHandler, nickName));
+
+            return successful ? id : -1;
         }
 
         public void RemoveConnection(CommunicationHandler communicationHandler)

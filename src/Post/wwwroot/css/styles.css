@@ -79,13 +79,12 @@
     transition: all 1s ease;
 }
 
-.item {
+.client {
     margin-left: 25px;
 }
 
 .messenger {
     margin-left: 200px;
-    
 }
 
 .messenger-input {
