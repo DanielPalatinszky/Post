@@ -7,7 +7,8 @@ import { Message, MessageLine } from '../../models/message';
 
 @Component({
     selector: "app-post",
-    templateUrl: "app/components/post/app.post.component.html"
+    templateUrl: "app/components/post/app.post.component.html",
+    styleUrls: ["app/components/post/simple-sidebar.css"]
 })
 export class PostComponent implements OnInit {
     private clients: Client[];
@@ -52,5 +53,9 @@ export class PostComponent implements OnInit {
         let name = this.clients.find(client => client.id === +message.source).name;
 
         this.messages[+message.source].push({ name: name, body: message.body });
+    }
+
+    openMenu(): void {
+        $("#wrapper").toggleClass("toggled");
     }
 }

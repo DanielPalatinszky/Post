@@ -1,9 +1,11 @@
-﻿<div class="jumbotron bootstrap-center">
-    <div class="container">
-        <form class="connect-form">
+﻿<div class="jumbotron">
+    <div class="container center">
+        <form class="connect-form" (ngSubmit)="sendConnectionRequest()" #connectForm="ngForm">
             <h3 class="connect-form-heading">Please enter a nickname</h3>
-            <input name="nickname" placeholder="Nickname" class="form-control" required="" autofocus="" [(ngModel)]="nickName">
-            <input class="btn btn-lg btn-primary btn-block connect-button" (click)="sendConnectionRequest()" type="button" value="Start">
+            <input type="text" id="nickname" name="nickname" placeholder="Nickname" class="form-control" [(ngModel)]="nickName" #nickname="ngModel" required>
+            <div [hidden]="nickname.valid || nickname.pristine" class="alert alert-danger">Nickname is required!</div>
+
+            <button class="btn btn-lg btn-primary btn-block connect-button" type="submit" [disabled]="!connectForm.form.valid">Connect</button>
         </form>
     </div>
 </div>

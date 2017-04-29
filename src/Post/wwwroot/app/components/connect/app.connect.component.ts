@@ -5,7 +5,8 @@ import { MessageService } from '../../services/message/app.message.service';
 
 @Component({
     selector: "app-connect",
-    templateUrl: "app/components/connect/app.connect.component.html"
+    templateUrl: "app/components/connect/app.connect.component.html",
+    styleUrls: ["app/components/connect/app.connect.component.css"]
 })
 export class ConnectComponent {
     private nickName = "";

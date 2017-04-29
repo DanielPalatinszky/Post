@@ -1,0 +1,26 @@
+﻿.connect-form {
+    max-width: 330px;
+    margin: 0 auto;
+}
+
+.connect-form-heading {
+    margin-bottom: 10px;
+}
+
+.connect-button {
+    margin-top: 15px;
+}
+
+.jumbotron {
+    height: 100%;
+    padding: 0;
+    margin: 0;
+}
+
+.center {
+    min-height: 100%;  /* Fallback for browsers do NOT support vh unit */
+    min-height: 100vh; /* These two lines are counted as one :-)       */
+    
+    display: flex;
+    align-items: center;
+}
