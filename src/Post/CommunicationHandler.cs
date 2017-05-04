@@ -52,7 +52,7 @@ namespace Post
             }
         }
 
-        private async Task SendMessageAsync(Message message)
+        public async Task SendMessageAsync(Message message)
         {
             var jObject = new JObject();
             jObject.Add("method", message.Method.ToString());

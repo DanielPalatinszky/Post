@@ -69,7 +69,7 @@ export class MessageService {
         else if (message.method === "Refresh") {
             this.loadClients(message);
         }
-        else if (message.method === "Message") {
+        else if (message.method === "Message" || message.method === "File") {
             this.messageObserver.next(message);
         }
     }
@@ -84,7 +84,7 @@ export class MessageService {
                 let id = client.split(" ")[0];
                 let name = client.split(" ")[1];
 
-                this.clients.push({id: +id, name: name});
+                this.clients.push({id: +id, name: name, messageReceived: false});
             }
         }
 

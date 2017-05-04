@@ -7,7 +7,7 @@ using Newtonsoft.Json.Linq;
 
 namespace Post
 {
-    public enum Method { Connection, Approved, Refresh, Message, Unknown }
+    public enum Method { Connection, Approved, Refresh, Message, File, Unknown }
 
     public static class MessageProcessor
     {
