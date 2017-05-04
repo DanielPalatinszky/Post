@@ -1,5 +1,4 @@
-﻿import { Component, OnInit } from '@angular/core';
-import { DomSanitizer } from '@angular/platform-browser';
+﻿import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 
 import { Observable } from 'rxjs/Rx';
 
@@ -25,16 +24,13 @@ export class PostComponent implements OnInit {
 
     private menuToggled = false;
 
-    constructor(private messageService: MessageService, private fileManager: FileManagerService, private sanitizer: DomSanitizer) { }
+    @ViewChild("messengerInput") messengerInput: ElementRef;
+
+    constructor(private messageService: MessageService, private fileManager: FileManagerService) { }
 
     ngOnInit(): void {
         this.messageService.getClients().subscribe(clients => {
             this.clients = clients;
-
-            if (this.clients.find(client => client === this.selectedClient) === undefined && this.selectedClient) {
-                this.messages[this.selectedClient.id] = undefined;
-                this.selectedClient = undefined;
-            }
         });
 
         this.messageService.getMessages().subscribe(message => {
@@ -53,6 +49,7 @@ export class PostComponent implements OnInit {
         }
 
         this.messages[this.selectedClient.id].push({ name: this.me.name, body: message });
+        this.messengerInput.nativeElement.value = "";
 
         this.messageService.sendMessage(this.me.id.toString(), this.selectedClient.id.toString(), message);
     }
@@ -91,23 +88,16 @@ export class PostComponent implements OnInit {
     }
 
     private postFile(message: Message): void {
-        this.fileManager.downloadFile(+message.body).subscribe(response => {
-            if (!this.files[+message.source]) {
-                this.files[+message.source] = [];
-            }
+        if (!this.files[+message.source]) {
+            this.files[+message.source] = [];
+        }
 
-            let name = this.clients.find(client => client.id === +message.source).name;
+        let name = this.clients.find(client => client.id === +message.source).name;
 
-            let bytes: string[] = [];
-            let text = response.text();
-            for (let i = 0; i < text.length; i++) {
-                bytes.push(text.charAt(i));
-            }
-            let data = new Blob([bytes], { type: response.headers.get("content-type") });
-            let fileURL = this.sanitizer.bypassSecurityTrustUrl(URL.createObjectURL(data));
+        let url = message.body.split(":")[0];
+        let fileName = message.body.split(":")[1];
 
-            this.files[+message.source].push({ name: name, url: <any>fileURL, filename: response.headers.get("content-disposition") });
-        });
+        this.files[+message.source].push({ name: name, url: "Files/" + url, filename: fileName });
     }
 
     private clientSelected(client: Client): void {

@@ -13,8 +13,4 @@ export class FileManagerService {
 
         this.http.post("/File/FileUpload/" + source + "/" + target, formData).subscribe();
     }
-
-    public downloadFile(fileId: number) {
-        return this.http.get("/File/FileDownload/" + fileId);
-    }
 }

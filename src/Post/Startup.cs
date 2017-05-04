@@ -36,11 +36,16 @@ namespace Post
             app.UseDefaultFiles();
             app.UseStaticFiles();
 
+            app.UseStaticFiles(new StaticFileOptions()
+            {
+                FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), @"tmp")),
+                RequestPath = new PathString("/Files")
+            });
+
             app.Map("/ws", WebSocketHandler.Map);
             app.UseMvc(routes =>
             {
                 routes.MapRoute("fileDownload", "{controller=File}/{action=FileUpload}/{source}/{target}");
-                routes.MapRoute("fileUpload", "{controller=File}/{action=FileDownload}/{fileId}");
             });
         }
     }

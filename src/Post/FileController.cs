@@ -14,45 +14,39 @@ namespace Post
 {
     public class FileController : Controller
     {
-        private static readonly ConcurrentDictionary<int, Tuple<byte[], string, string>> files = new ConcurrentDictionary<int, Tuple<byte[], string, string>>();
+        private static readonly ConcurrentDictionary<int, FileInfo> files = new ConcurrentDictionary<int, FileInfo>();
 
         [HttpPost]
         public async Task<IActionResult> FileUpload(int source, int target, IFormCollection collection)
         {
-            byte[] data;
-
-            var file = collection.Files[0];
-            using (var memoryStream = new MemoryStream())
-            using (var stream = file.OpenReadStream())
-            {
-                await stream.CopyToAsync(memoryStream);
-
-                data = memoryStream.ToArray();
-            }
-
             int id = 0;
             while (files.ContainsKey(id))
             {
                 id++;
             }
 
-            files.TryAdd(id, new Tuple<byte[], string, string>(data, file.ContentType, file.FileName));
+            var downloadPath = Path.Combine(Directory.GetCurrentDirectory(), @"tmp");
+
+            var file = collection.Files[0];
+
+            var fileExtension = file.FileName.Substring(file.FileName.LastIndexOf('.'));
+            var url = id + fileExtension;
+
+            var filePath = Path.Combine(downloadPath, url);
+            using (var fileStream = new FileStream(filePath, FileMode.Create))
+            using (var stream = file.OpenReadStream())
+            {
+                await stream.CopyToAsync(fileStream);
+            }
+
+            files.TryAdd(id, new FileInfo(filePath));
 
             var targetClient = ConnectionManager.Instance.SearchById(target);
-            var message = new Message(Method.File, source.ToString(), target.ToString(), id.ToString());
+            var message = new Message(Method.File, source.ToString(), target.ToString(), $"{url}:{file.FileName}");
 
             await targetClient.Item1.SendMessageAsync(message);
 
             return Accepted();
-        }
-
-        [HttpGet]
-        public IActionResult FileDownload(int fileId)
-        {
-            Tuple<byte[], string, string> file = null;
-            files.TryRemove(fileId, out file);
-
-            return File(file.Item1, file.Item2, file.Item3);
         }
     }
 }

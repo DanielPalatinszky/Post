@@ -80,6 +80,12 @@
     color: #fff;
     background: rgba(255,255,255,0.2);
 }
+
+.sidebar-nav li a.message {
+    text-decoration: none;
+    color: #fff;
+    background: rgba(255,100,0,0.2);
+}
 /*----------*/
 
 .sidebar-nav li a:hover {

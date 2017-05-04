@@ -2,7 +2,7 @@
     <div id="sidebar-wrapper">
         <ul class="sidebar-nav">
             <li *ngFor="let client of clients" (click)="clientSelected(client)">
-                <a [class.active]="client===selectedClient || client.messageReceived">
+                <a [class.active]="client===selectedClient" [class.message]="client.messageReceived">
                     {{client.name}}
                 </a>
             </li>
@@ -22,7 +22,7 @@
                                 {{message.name}}: {{message.body}}
                             </li>
                             <li class="list-group-item" *ngFor="let file of files[selectedClient.id]">
-                                {{file.name}}: <a [href]="file.url" download>{{file.filename}}</a>
+                                {{file.name}}: <a [href]="file.url" [download]="file.filename">{{file.filename}}</a>
                             </li>
                         </ul> 
                     </div>
