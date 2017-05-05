@@ -45,6 +45,10 @@ export class PostComponent implements OnInit {
     }
 
     private sendMessage(message: string): void {
+        if (this.selectedClientDisconnected()) {
+            return;
+        }
+
         if (!this.messages[this.selectedClient.id]) {
             this.messages[this.selectedClient.id] = [];
         }
@@ -56,6 +60,10 @@ export class PostComponent implements OnInit {
     }
 
     private sendFile(file: File): void {
+        if (this.selectedClientDisconnected()) {
+            return;
+        }
+
         if (!this.messages[this.selectedClient.id]) {
             this.messages[this.selectedClient.id] = [];
         }
@@ -102,8 +110,20 @@ export class PostComponent implements OnInit {
     }
 
     private clientSelected(client: Client): void {
+        if (this.selectedClientDisconnected()) {
+            this.messages[this.selectedClient.id] = undefined;
+        }
+
         this.selectedClient = client;
         this.selectedClient.messageReceived = false;
+    }
+
+    private selectedClientDisconnected(): boolean {
+        if (this.clients.filter(client => client === this.selectedClient) === undefined) {
+            return true;
+        }
+
+        return false;
     }
 
     private toggleMenu(): void {
