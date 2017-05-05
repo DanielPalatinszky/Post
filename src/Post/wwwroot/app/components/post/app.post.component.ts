@@ -1,4 +1,5 @@
-﻿import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+﻿import { Component, OnInit, ViewChild, ElementRef, Inject } from '@angular/core';
+import { DOCUMENT } from '@angular/platform-browser';
 
 import { Observable } from 'rxjs/Rx';
 
@@ -11,7 +12,7 @@ import { Message, MessageLine, FileLine } from '../../models/message';
 @Component({
     selector: "app-post",
     templateUrl: "app/components/post/app.post.component.html",
-    styleUrls: ["app/components/post/simple-sidebar.css"]
+    styleUrls: ["app/components/post/simple-sidebar.css", "app/components/post/app.post.component.css"]
 })
 export class PostComponent implements OnInit {
     private clients: Client[];
@@ -26,7 +27,7 @@ export class PostComponent implements OnInit {
 
     @ViewChild("messengerInput") messengerInput: ElementRef;
 
-    constructor(private messageService: MessageService, private fileManager: FileManagerService) { }
+    constructor(private messageService: MessageService, private fileManager: FileManagerService, @Inject(DOCUMENT) private document: Document) { }
 
     ngOnInit(): void {
         this.messageService.getClients().subscribe(clients => {
@@ -107,5 +108,9 @@ export class PostComponent implements OnInit {
 
     private toggleMenu(): void {
         this.menuToggled = !this.menuToggled;
+    }
+
+    private scroll(): void {
+        document.body.scrollTop = document.body.scrollHeight;
     }
 }
