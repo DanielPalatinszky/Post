@@ -114,7 +114,7 @@ export class PostComponent implements OnInit {
     }
 
     private selectedClientDisconnected(): boolean {
-        if (this.clients.filter(client => client === this.selectedClient) === undefined) {
+        if (this.clients.filter(client => client.id === this.selectedClient.id && client.name === this.selectedClient.name) === undefined) {
             return true;
         }
 
