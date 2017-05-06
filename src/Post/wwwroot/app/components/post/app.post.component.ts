@@ -7,7 +7,7 @@ import { MessageService } from '../../services/message/app.message.service';
 import { FileManagerService } from '../../services/filemanager/app.filemanager.service';
 
 import { Client } from '../../models/client';
-import { Message, MessageLine, FileLine } from '../../models/message';
+import { Message, Line, MessageLine, FileLine } from '../../models/message';
 
 @Component({
     selector: "app-post",
@@ -20,8 +20,7 @@ export class PostComponent implements OnInit {
 
     private me: Client;
 
-    private messages: { [id: number]: MessageLine[] } = {};
-    private files: { [id: number]: FileLine[] } = {};
+    private messages: { [id: number]: Line[] } = {};
 
     private menuToggled = false;
 
@@ -53,7 +52,7 @@ export class PostComponent implements OnInit {
             this.messages[this.selectedClient.id] = [];
         }
 
-        this.messages[this.selectedClient.id].push({ name: this.me.name, body: message });
+        this.messages[this.selectedClient.id].push(<MessageLine>{ name: this.me.name, body: message });
         this.messengerInput.nativeElement.value = "";
 
         this.messageService.sendMessage(this.me.id.toString(), this.selectedClient.id.toString(), message);
@@ -68,7 +67,7 @@ export class PostComponent implements OnInit {
             this.messages[this.selectedClient.id] = [];
         }
 
-        this.messages[this.selectedClient.id].push({ name: this.me.name, body: file.name });
+        this.messages[this.selectedClient.id].push(<MessageLine>{ name: this.me.name, body: file.name });
 
         this.fileManager.sendFile(file, this.me.id, this.selectedClient.id);
     }
@@ -79,6 +78,10 @@ export class PostComponent implements OnInit {
             targetClient.messageReceived = true;
         }
 
+        if (!this.messages[+message.source]) {
+            this.messages[+message.source] = [];
+        }
+
         if (message.method === "Message") {
             this.postMessage(message);
         } else {
@@ -87,26 +90,18 @@ export class PostComponent implements OnInit {
     }
 
     private postMessage(message: Message): void {
-        if (!this.messages[+message.source]) {
-            this.messages[+message.source] = [];
-        }
-
         let name = this.clients.find(client => client.id === +message.source).name;
 
-        this.messages[+message.source].push({ name: name, body: message.body });
+        this.messages[+message.source].push(<MessageLine>{ name: name, body: message.body });
     }
 
     private postFile(message: Message): void {
-        if (!this.files[+message.source]) {
-            this.files[+message.source] = [];
-        }
-
         let name = this.clients.find(client => client.id === +message.source).name;
 
         let url = message.body.split(":")[0];
         let fileName = message.body.split(":")[1];
 
-        this.files[+message.source].push({ name: name, url: "Files/" + url, filename: fileName });
+        this.messages[+message.source].push(<FileLine>{ name: name, url: "Files/" + url, filename: fileName });
     }
 
     private clientSelected(client: Client): void {

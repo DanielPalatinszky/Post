@@ -27,11 +27,12 @@
                         <div class="message-div">
                             <ul class="list-group">
                                 <li class="list-group-item" *ngFor="let message of messages[selectedClient.id]">
-                                    {{message.name}}: {{message.body}}
-                                    {{scroll()}}
-                                </li>
-                                <li class="list-group-item" *ngFor="let file of files[selectedClient.id]">
-                                    {{file.name}}: <a [href]="file.url" [download]="file.filename">{{file.filename}}</a>
+                                    <span *ngIf="message.body">
+                                        {{message.name}}: {{message.body}}
+                                    </span>
+                                    <span *ngIf="message.url">
+                                        {{message.name}}: <a [href]="message.url" [download]="message.filename">{{message.filename}}</a>
+                                    </span>
                                     {{scroll()}}
                                 </li>
                             </ul>
