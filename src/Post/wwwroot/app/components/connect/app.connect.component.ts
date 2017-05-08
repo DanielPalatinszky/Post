@@ -3,6 +3,9 @@ import { Router } from '@angular/router';
 
 import { MessageService } from '../../services/message/app.message.service';
 
+/**
+ * The component which handles the nickname selection and server connection.
+ */
 @Component({
     selector: "app-connect",
     templateUrl: "app/components/connect/app.connect.component.html",
@@ -19,7 +22,7 @@ export class ConnectComponent {
         }
     }
 
-    sendConnectionRequest(): void {
+    private sendConnectionRequest(): void {
         localStorage.setItem("nickname", this.nickName);
 
         this.messageService.sendConnectionMessage(this.nickName);

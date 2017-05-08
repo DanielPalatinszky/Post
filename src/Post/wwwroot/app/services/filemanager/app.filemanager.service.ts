@@ -3,6 +3,9 @@ import { Http } from '@angular/http';
 
 import { Observable } from 'rxjs/Rx';
 
+/**
+ * Service which handles only file send.
+ */
 @Injectable()
 export class FileManagerService {
     constructor(private http: Http) { }

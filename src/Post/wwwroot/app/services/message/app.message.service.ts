@@ -7,6 +7,9 @@ import { WebSocketService } from '../../services/websocket/app.websocket.service
 import { Message } from '../../models/message';
 import { Client } from '../../models/client';
 
+/**
+ * Service which handles the different message types.
+ */
 @Injectable()
 export class MessageService {
     private server: Subject<Message>;
@@ -60,6 +63,10 @@ export class MessageService {
         console.log("CONNECTION CLOSED");
     }
 
+    /**
+     * Processes received message and dispatches its handling by the type.
+     * @param message
+     */
     private processMessage(message: Message): void {
         if (message.method === "Approved") {
             localStorage.setItem("id", message.target);
@@ -91,10 +98,16 @@ export class MessageService {
         this.clientObserver.next(this.clients);
     }
 
+    /**
+     * Returns with an RxJs observable which can be used to get notifications about client connections and disconnections.
+     */
     public getClients(): Observable<Client[]> {
         return this.clientObservable;
     }
 
+    /**
+     * Returns with an RxJs observable which can be used to get notifications about messages.
+     */
     public getMessages(): Observable<Message> {
         return this.messageObservable;
     }

@@ -9,6 +9,9 @@ import { FileManagerService } from '../../services/filemanager/app.filemanager.s
 import { Client } from '../../models/client';
 import { Message, Line, MessageLine, FileLine } from '../../models/message';
 
+/**
+ * The component which handles the textual and file messages.
+ */
 @Component({
     selector: "app-post",
     templateUrl: "app/components/post/app.post.component.html",
@@ -89,12 +92,20 @@ export class PostComponent implements OnInit {
         }
     }
 
+    /**
+     * Pushes received message into the message array which is displayed by binding.
+     * @param message
+     */
     private postMessage(message: Message): void {
         let name = this.clients.find(client => client.id === +message.source).name;
 
         this.messages[+message.source].push(<MessageLine>{ name: name, body: message.body });
     }
 
+    /**
+     * Pushes received file information into the message array which is displayed by binding.
+     * @param message
+     */
     private postFile(message: Message): void {
         let name = this.clients.find(client => client.id === +message.source).name;
 
@@ -113,18 +124,27 @@ export class PostComponent implements OnInit {
         this.selectedClient.messageReceived = false;
     }
 
+    /**
+     * Checks if the selected client has disconnected.
+     */
     private selectedClientDisconnected(): boolean {
-        if (this.clients.filter(client => client.id === this.selectedClient.id && client.name === this.selectedClient.name) === undefined) {
+        if (this.selectedClient && this.clients.filter(client => client.id === this.selectedClient.id && client.name === this.selectedClient.name) === undefined) {
             return true;
         }
 
         return false;
     }
 
+    /**
+     * Show and hide menu.
+     */
     private toggleMenu(): void {
         this.menuToggled = !this.menuToggled;
     }
 
+    /**
+     * Autoscroll.
+     */
     private scroll(): void {
         document.body.scrollTop = document.body.scrollHeight;
     }
